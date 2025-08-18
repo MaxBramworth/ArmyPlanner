@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 namespace ArmyPlanner
 {
-    public class MainWindowViewModel : BindableBase
+    public class ArmyViewModel : BindableBase
     {
         public string Title
         {
@@ -38,7 +38,7 @@ namespace ArmyPlanner
 
         public ObservableCollection<ArmyUnit> CurrentArmy { get; set; } = [];
 
-        public MainWindowViewModel()
+        public ArmyViewModel()
         {
             foreach (var unit in FileReader.GetAllUnits())
             {
