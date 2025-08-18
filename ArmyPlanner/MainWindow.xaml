@@ -7,8 +7,12 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <TabControl>
-            <local:ArmyView/>
+        <TabControl ItemsSource="{Binding Armies, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="ArmyName"/>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
         </TabControl>
     </Grid>
 </Window>

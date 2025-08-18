@@ -45,11 +45,12 @@ namespace ArmyPlanner
             return units.ToArray();
         }
 
-        public static ArmyUnit[][] GetAllSavedArmies()
+        public static List<ArmyUnit[]> GetAllSavedArmies()
         {
-            var toReturn = new ArmyUnit[0][];
+            List<ArmyUnit[]> toReturn = [];
 
-
+            toReturn.Add([new("test name", 60)]);
+            toReturn.Add([new("test name2", 60)]);
 
             return toReturn;
         }
