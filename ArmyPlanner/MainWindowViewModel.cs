@@ -65,7 +65,7 @@ namespace ArmyPlanner
 
         void SaveArmy()
         {
-
+            FileReader.SaveCurrentArmy(CurrentArmy.ToList());
         }
 
         void LoadArmy()

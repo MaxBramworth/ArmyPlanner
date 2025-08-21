@@ -1,16 +1,17 @@
 ﻿using Microsoft.Win32;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Pipes;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
-using Newtonsoft.Json;
 using static System.Net.Mime.MediaTypeNames;
-using Newtonsoft.Json.Linq;
 
 namespace ArmyPlanner
 {
@@ -80,6 +81,39 @@ namespace ArmyPlanner
             }
 
             return result;
+        }
+
+        public static void SaveCurrentArmy(List<ArmyUnit> list)
+        {
+            var dialogue = new SaveFileDialog();
+
+            dialogue.InitialDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            dialogue.Filter = "json files(*.json) | *.json";
+
+            if (dialogue.ShowDialog().Value)
+            {
+                var filePath = dialogue.FileName;
+                var fileStream = dialogue.OpenFile();
+                var armyToSerialize = new JsonArmy
+                {
+                    Units = new string[list.Count]
+                };
+                for (int i = 0; i < list.Count; i++)
+                {
+                    armyToSerialize.Units[i] = list[i].Name;
+                }
+                string jsonString = JsonConvert.SerializeObject(armyToSerialize);
+
+                using (StreamWriter writer = new StreamWriter(fileStream))
+                {
+                    writer.Write(jsonString);
+                }
+            }
+        }
+
+        private class JsonArmy
+        {
+            public string[] Units = [];
         }
     }
 }
