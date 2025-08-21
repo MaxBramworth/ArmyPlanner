@@ -70,7 +70,11 @@ namespace ArmyPlanner
 
         void LoadArmy()
         {
-
+            CurrentArmy.Clear();
+            foreach (var unit in FileReader.SelectAndLoadArmy())
+            {
+                CurrentArmy.Add(unit);
+            }
         }
 
         void RecalculatePointsTotal()

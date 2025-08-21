@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,6 +8,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using Newtonsoft.Json;
+using static System.Net.Mime.MediaTypeNames;
+using Newtonsoft.Json.Linq;
 
 namespace ArmyPlanner
 {
@@ -16,12 +20,6 @@ namespace ArmyPlanner
         {
             var assemblyLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             return $"{assemblyLocation}\\ThousandSonsUnits.txt";
-        }
-
-        private static string GetPathToArmiesFile()
-        {
-            var assemblyLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            return $"{assemblyLocation}\\SavedArmies.Json";
         }
 
         public static ArmyUnit[]? GetAllUnits()
@@ -45,14 +43,43 @@ namespace ArmyPlanner
             return units.ToArray();
         }
 
-        public static List<ArmyUnit[]> GetAllSavedArmies()
+        public static List<ArmyUnit> SelectAndLoadArmy()
         {
-            List<ArmyUnit[]> toReturn = [];
+            var result = new List<ArmyUnit>();
 
-            toReturn.Add([new("test name", 60)]);
-            toReturn.Add([new("test name2", 60)]);
+            var dialogue = new OpenFileDialog();
 
-            return toReturn;
+            dialogue.InitialDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            dialogue.Filter = "json files(*.json) | *.json";
+
+            if (dialogue.ShowDialog().Value)
+            {
+                var filePath = dialogue.FileName;
+                var fileStream = dialogue.OpenFile();
+                using (StreamReader reader = new StreamReader(fileStream))
+                {
+                    var fileContent = reader.ReadToEnd();
+                    var army = JsonConvert.DeserializeObject<JObject>(fileContent);
+                    var units = army.GetValue("Units");
+                    var unitsArray = units.Children();
+
+                    var allUnits = GetAllUnits();
+
+                    if (allUnits != null)
+                    {
+                        foreach (var unit in unitsArray)
+                        {
+                            var unitFound = allUnits.FirstOrDefault(u => u.Name == unit.Value<string>());
+                            if (unitFound != null)
+                            {
+                                result.Add(unitFound);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return result;
         }
     }
 }
