@@ -34,16 +34,31 @@ namespace ArmyPlanner
             set => SetProperty(ref _pointsTotal, value);
         }
 
+        public string SearchbarText
+        {
+            get => _searchBarText;
+            set
+            {
+                SetProperty(ref _searchBarText, value);
+                if (_searchBarText.Length > 1)
+                {
+                    SetAvailableArmyUnits(value);
+                }
+                else
+                {
+                    SetAvailableArmyUnits();
+                }
+            }
+        }
+
         public ObservableCollection<ArmyUnit> AvailableArmyUnits { get; set; } = [];
 
         public ObservableCollection<ArmyUnit> CurrentArmy { get; set; } = [];
 
         public MainWindowViewModel()
         {
-            foreach (var unit in FileReader.GetAllUnits())
-            {
-                AvailableArmyUnits.Add(unit);
-            }
+            _armyUnits = FileReader.GetAllUnits();
+            SetAvailableArmyUnits();
 
             CurrentArmy.CollectionChanged += (_, _) => RecalculatePointsTotal();
         }
@@ -52,6 +67,7 @@ namespace ArmyPlanner
         public RelayCommand RemoveFromArmyCommand => new(RemoveFromArmy);  
         public RelayCommand SaveCommand => new(SaveArmy);  
         public RelayCommand LoadCommand => new(LoadArmy);
+        public RelayCommand SearchbarTextChangedCommand => new(SearchbarTextChanged);
 
         void AddToArmy()
         {
@@ -77,6 +93,31 @@ namespace ArmyPlanner
             }
         }
 
+        void SearchbarTextChanged()
+        {
+
+        }
+
+        void SetAvailableArmyUnits(string searchCriterion = "")
+        {
+            if (string.IsNullOrWhiteSpace(searchCriterion))
+            {
+                foreach (var unit in _armyUnits)
+                {
+                    AvailableArmyUnits.Add(unit);
+                }
+            }
+            else
+            {
+                AvailableArmyUnits.Clear();
+                searchCriterion = searchCriterion.ToLower();
+                foreach (var unit in _armyUnits.Where(u => u.Name.ToLower().Contains(searchCriterion)))
+                {
+                    AvailableArmyUnits.Add(unit);
+                }
+            }
+        }
+
         void RecalculatePointsTotal()
         {
             int points = 0;
@@ -89,7 +130,8 @@ namespace ArmyPlanner
             PointsTotal = $"Total: {points}";
         }
 
-        private string _title = "Army", _pointsTotal = "Total: 0";
+        private string _title = "Army", _pointsTotal = "Total: 0", _searchBarText;
         private int _selectedAllunitsIndex, _selectedArmyIndex;
+        private readonly ArmyUnit[] _armyUnits = [];
     }
 }

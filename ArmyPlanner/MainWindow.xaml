@@ -75,7 +75,8 @@
                 <RowDefinition Height="2*"/>
             </Grid.RowDefinitions>
             <TextBox Grid.Row="1"
-                             Margin="5"/>
+                     Margin="5"
+                     Text="{Binding SearchbarText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             <DataGrid Grid.Row="2"
                               Grid.ColumnSpan="2"
                               Margin="5"
