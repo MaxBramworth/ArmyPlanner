@@ -20,10 +20,12 @@
         <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal">
             <Button Margin="5, 5, 0, 5"
                     Content="Save"
-                    Width="50"/>
+                    Width="50"
+                    Command="{Binding SaveCommand}"/>
             <Button Margin="5, 5, 0, 5"
                     Content="Load"
-                    Width="50"/>
+                    Width="50"
+                    Command="{Binding LoadCommand}"/>
         </StackPanel>
         <Grid Grid.Row="1">
             <Grid.RowDefinitions>

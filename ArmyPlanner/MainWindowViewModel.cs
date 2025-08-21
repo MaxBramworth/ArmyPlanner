@@ -49,7 +49,9 @@ namespace ArmyPlanner
         }
 
         public RelayCommand AddToArmyCommand => new(AddToArmy);
-        public RelayCommand RemoveFromArmyCommand => new(RemoveFromArmy);
+        public RelayCommand RemoveFromArmyCommand => new(RemoveFromArmy);  
+        public RelayCommand SaveCommand => new(SaveArmy);  
+        public RelayCommand LoadCommand => new(LoadArmy);
 
         void AddToArmy()
         {
@@ -59,6 +61,16 @@ namespace ArmyPlanner
         void RemoveFromArmy()
         {
             CurrentArmy.RemoveAt(SelectedArmyIndex);
+        }
+
+        void SaveArmy()
+        {
+
+        }
+
+        void LoadArmy()
+        {
+
         }
 
         void RecalculatePointsTotal()
